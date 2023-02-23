@@ -1,7 +1,5 @@
-import { User } from "./classes/userClass.js";
 import { Week, Day } from "./classes/calendarClass.js";
-//import { users } from "eventListener.js"
-const users = [new User("Mirko"), new User("Giacomo"), new User("Ireneo")];
+import { users } from "./eventListener.js";
 
 const randomizeUsers = () => {
   let startUser = Math.floor(Math.random() * (users.length - 0) + 0);
@@ -31,19 +29,21 @@ for (let i = 1; i <= remainingDay; i++) {
     )
   );
 }
-days.forEach((day) => {
-  let currentDay = day.date;
+export const assignDays = () => {
+  days.forEach((day) => {
+    let currentDay = day.date;
 
-  for (let i = 0; i < Math.round(users.length / 2); i++) {
-    //check and assign day to user
-    users.forEach((user) => {
-      if (user.checkDay(currentDay) && day.isFree(users.length)) {
-        day.assign(user);
-        user.addToUserCalendar(currentDay);
-      }
-    });
-  }
-  randomizeUsers();
-});
+    for (let i = 0; i < Math.round(users.length / 2); i++) {
+      //check and assign day to user
+      users.forEach((user) => {
+        if (user.checkDay(currentDay) && day.isFree(users.length)) {
+          day.assign(user);
+          user.addToUserCalendar(currentDay);
+        }
+      });
+    }
+    randomizeUsers();
+  });
+};
 
 //console.log(days);
