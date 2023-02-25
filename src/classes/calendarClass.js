@@ -1,5 +1,29 @@
-export class Week {
-  contructor(day) {}
+export class Calendar {
+  constructor(month) {
+    this.month = month;
+    this.rows = [];
+  }
+  addUser(user, days) {
+    let buttons = days.map((day) => {
+      if (day.occupiedBy.filter((e) => e === user.name) > 0) {
+        return `<button class="btn btn-success calendarDayBtn px-2" id="">${day.date}</button>`;
+      } else if (day.isReserved()) {
+        return `<button class="btn btn-dark calendarDayBtn px-2" id="">${day.date}</button>`;
+      } else {
+        return `<button class="btn btn-warning calendarDayBtn px-2" id="">${day.date}</button>`;
+      }
+    });
+    console.log(buttons);
+    this.rows.push(`<div class="row mt-5 text-center" id=${user.name}>
+        <div class="col-md-1">
+          <b>${user.name}</b>
+        </div>
+        <div class="col-md-11">
+        ${btn.join(``)}
+        </div>
+    </div>`);
+    console.log(this.rows);
+  }
 }
 
 export class Day {

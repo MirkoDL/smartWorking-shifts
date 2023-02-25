@@ -117,18 +117,272 @@ parcelRequire = (function (modules, cache, entry, globalName) {
   }
 
   return newRequire;
-})({"src/populateHTML.js":[function(require,module,exports) {
+})({"src/classes/calendarClass.js":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.Day = exports.Calendar = void 0;
+function _typeof(obj) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (obj) { return typeof obj; } : function (obj) { return obj && "function" == typeof Symbol && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }, _typeof(obj); }
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, _toPropertyKey(descriptor.key), descriptor); } }
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); Object.defineProperty(Constructor, "prototype", { writable: false }); return Constructor; }
+function _toPropertyKey(arg) { var key = _toPrimitive(arg, "string"); return _typeof(key) === "symbol" ? key : String(key); }
+function _toPrimitive(input, hint) { if (_typeof(input) !== "object" || input === null) return input; var prim = input[Symbol.toPrimitive]; if (prim !== undefined) { var res = prim.call(input, hint || "default"); if (_typeof(res) !== "object") return res; throw new TypeError("@@toPrimitive must return a primitive value."); } return (hint === "string" ? String : Number)(input); }
+var Calendar = /*#__PURE__*/function () {
+  function Calendar(month) {
+    _classCallCheck(this, Calendar);
+    this.month = month;
+    this.rows = [];
+  }
+  _createClass(Calendar, [{
+    key: "addUser",
+    value: function addUser(user, days) {
+      var buttons = days.map(function (day) {
+        if (day.occupiedBy.filter(function (e) {
+          return e === user.name;
+        }) > 0) {
+          return "<button class=\"btn btn-success calendarDayBtn px-2\" id=\"\">".concat(day.date, "</button>");
+        } else if (day.isReserved()) {
+          return "<button class=\"btn btn-dark calendarDayBtn px-2\" id=\"\">".concat(day.date, "</button>");
+        } else {
+          return "<button class=\"btn btn-warning calendarDayBtn px-2\" id=\"\">".concat(day.date, "</button>");
+        }
+      });
+      console.log(buttons);
+      this.rows.push("<div class=\"row mt-5 text-center\" id=".concat(user.name, ">\n        <div class=\"col-md-1\">\n          <b>").concat(user.name, "</b>\n        </div>\n        <div class=\"col-md-11\">\n        ").concat(btn.join(""), "\n        </div>\n    </div>"));
+      console.log(this.rows);
+    }
+  }]);
+  return Calendar;
+}();
+exports.Calendar = Calendar;
+var Day = /*#__PURE__*/function () {
+  function Day(day) {
+    _classCallCheck(this, Day);
+    this.date = day; // aaaa-mm-dd
+    this.occupiedBy = []; // array with names
+  }
+  _createClass(Day, [{
+    key: "isNextDayAvaiable",
+    value: function isNextDayAvaiable() {
+      //check if the next day is: weekend - holiday - free
+      //TODO soon
+    }
+  }, {
+    key: "isReserved",
+    value: function isReserved() {
+      //return true if reserved by policy/weekend
+
+      //check weekend
+      var day = new Date(this.date).getDay();
+      var isWeekend = day === 6 || day === 0; // 6 = Saturday, 0 = Sunday
+      return isWeekend;
+    }
+  }, {
+    key: "isFree",
+    value: function isFree(people) {
+      //check for 1 sit, return false if already assigned to half the crew(mandatory half the crew to be in office everyday)
+      //false if weekend
+      return this.occupiedBy.length < Math.round(people / 2) && !this.isReserved();
+    }
+  }, {
+    key: "assign",
+    value: function assign(user) {
+      this.occupiedBy.push(user);
+    }
+  }]);
+  return Day;
+}();
+exports.Day = Day;
+},{}],"src/classes/userClass.js":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.User = void 0;
+function _typeof(obj) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (obj) { return typeof obj; } : function (obj) { return obj && "function" == typeof Symbol && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }, _typeof(obj); }
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, _toPropertyKey(descriptor.key), descriptor); } }
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); Object.defineProperty(Constructor, "prototype", { writable: false }); return Constructor; }
+function _toPropertyKey(arg) { var key = _toPrimitive(arg, "string"); return _typeof(key) === "symbol" ? key : String(key); }
+function _toPrimitive(input, hint) { if (_typeof(input) !== "object" || input === null) return input; var prim = input[Symbol.toPrimitive]; if (prim !== undefined) { var res = prim.call(input, hint || "default"); if (_typeof(res) !== "object") return res; throw new TypeError("@@toPrimitive must return a primitive value."); } return (hint === "string" ? String : Number)(input); }
+var User = /*#__PURE__*/function () {
+  function User(name) {
+    _classCallCheck(this, User);
+    this.name = name;
+    this.reservedDays = [
+      /*
+      aaaa-mm-dd
+      */
+    ];
+    this.assignedDays = [
+      /*
+        {
+      weekNumber: int,
+      day: aaaa-mm-dd
+        }
+        */
+    ];
+  }
+  _createClass(User, [{
+    key: "addToUserCalendar",
+    value: function addToUserCalendar(day) {
+      //day: dd / completeDate: aaaa-mm-dd
+      var weekNumber = this.getWeekNumber(day);
+      this.assignedDays.push({
+        weekNumber: weekNumber,
+        day: day
+      });
+      //console.log(this.assignedDays)
+    }
+  }, {
+    key: "isWeekDone",
+    value: function isWeekDone(day) {
+      //check if already assigned to two days of the week
+      //onsole.log('start ' + this.assignedDays)
+      var weekNumber = this.getWeekNumber(day);
+      var counter = 0;
+      for (var i = 0; i < this.assignedDays.length; i++) {
+        if (this.assignedDays[i].weekNumber === weekNumber) {
+          counter++;
+        }
+      }
+      return counter > 1; //true if user already assigned to 2 days
+    }
+  }, {
+    key: "getWeekNumber",
+    value: function getWeekNumber(currentDate) {
+      var startDate = new Date(new Date().getFullYear(), 0, 1);
+      var days = Math.floor((new Date(currentDate) - startDate) / (24 * 60 * 60 * 1000));
+      var weekNumber = Math.ceil(days / 7);
+      return weekNumber;
+    }
+  }, {
+    key: "isVacation",
+    value: function isVacation(dayToCheck) {
+      //check if the user has vacation planned on that day
+      return this.reservedDays.filter(function (day) {
+        return day === dayToCheck;
+      }) > 0; //true if reserved
+    }
+  }, {
+    key: "reserveDay",
+    value: function reserveDay(day) {
+      this.reservedDays.push(day);
+    }
+  }, {
+    key: "checkDay",
+    value: function checkDay(day) {
+      return !(this.isVacation(day) || this.isWeekDone(day)); //true if can add day
+    }
+  }]);
+  return User;
+}();
+exports.User = User;
+},{}],"src/eventListener.js":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.users = void 0;
+var _userClass = require("./classes/userClass.js");
+var _calendarClass = require("./classes/calendarClass.js");
+var _index = require("./index.js");
+var users = [];
+exports.users = users;
+document.querySelector("#getUserForm").addEventListener("submit", function (e) {
+  e.preventDefault();
+  var username = document.querySelector("#username").value.trim();
+  if (username === "") {
+    return;
+  }
+  console.log("submitted");
+  username = username[0].toUpperCase() + username.substring(1);
+  users.push(new _userClass.User(username));
+  var calendar = new _calendarClass.Calendar();
+  calendar.addUser(users[users.length - 1], _index.days);
+});
+document.querySelector("#monthSelector").addEventListener("change", function (e) {
+  (0, _index.getMonthDays)(e.currentTarget.value);
+  //console.log(days);
+});
+},{"./classes/userClass.js":"src/classes/userClass.js","./classes/calendarClass.js":"src/classes/calendarClass.js","./index.js":"src/index.js"}],"src/index.js":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.getMonthDays = exports.days = exports.assignDays = void 0;
+var _calendarClass = require("./classes/calendarClass.js");
+var _eventListener = require("./eventListener.js");
+var randomizeUsers = function randomizeUsers() {
+  var startUser = Math.floor(Math.random() * (_eventListener.users.length - 0) + 0);
+  //move the selected user to the beginning as extracted prior
+  _eventListener.users.unshift(_eventListener.users[startUser]);
+  _eventListener.users.splice(startUser + 1, 1);
+};
+var days = [];
+exports.days = days;
+var getMonthDays = function getMonthDays(month) {
+  days.length = 0;
+  //userInput truncate to lenth 3
+  var monthNumber = "GenFebMarAprMagGiuLugAgoSetOttNovDic".indexOf(month.substring(0, 3)) / 3 + 1; //get month number 0-11
+  var lastDayOfMonth = new Date(new Date().getFullYear(), monthNumber, 0).getDate();
+  var remainingDay = function remainingDay() {
+    if (new Date().getMonth() === monthNumber - 1) {
+      return lastDayOfMonth - new Date().getDate();
+    } else {
+      return lastDayOfMonth;
+    }
+  };
+  var remainingDays = remainingDay();
+  for (var i = 1; i <= remainingDays; i++) {
+    days.push(new _calendarClass.Day("".concat(new Date().getFullYear(), "-").concat(monthNumber < 9 ? "0".concat(monthNumber) : monthNumber, "-").concat(new Date().getMonth() !== monthNumber - 1 ? i : new Date().getDate() + i)));
+  }
+};
+exports.getMonthDays = getMonthDays;
+var assignDays = function assignDays() {
+  days.forEach(function (day) {
+    var currentDay = day.date;
+    for (var i = 0; i < Math.round(_eventListener.users.length / 2); i++) {
+      //check and assign day to user
+      _eventListener.users.forEach(function (user) {
+        if (user.checkDay(currentDay) && day.isFree(_eventListener.users.length)) {
+          day.assign(user);
+          user.addToUserCalendar(currentDay);
+        }
+      });
+    }
+    randomizeUsers();
+  });
+};
+exports.assignDays = assignDays;
+},{"./classes/calendarClass.js":"src/classes/calendarClass.js","./eventListener.js":"src/eventListener.js"}],"src/populateHTML.js":[function(require,module,exports) {
+"use strict";
+
+var _index = require("./index.js");
 var monthNames = ["Gennaio", "Febbraio", "Marzo", "Aprile", "Maggio", "Giugno", "Luglio", "Agosto", "Settembre", "Ottobre", "Novembre", "Dicembre"];
 window.onload = function () {
+  //add the next 4 month to the month selector
   var monthSelectorElement = document.querySelector("#monthSelector");
   var currentMonth = new Date().getMonth();
   for (var i = 0; i < 4; i++) {
+    if (i === 0) {
+      (0, _index.getMonthDays)(monthNames[i + currentMonth]);
+    }
     var option = document.createElement("option");
     option.text = "".concat(monthNames[i + currentMonth]);
     monthSelectorElement.add(option);
   }
+  console.log(_index.days);
 };
-},{}],"node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
+
+//create Calendar GUI
+},{"./index.js":"src/index.js"}],"node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
 var global = arguments[3];
 var OVERLAY_ID = '__parcel__error__overlay__';
 var OldModule = module.bundle.Module;
@@ -153,7 +407,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "36455" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "34065" + '/');
   ws.onmessage = function (event) {
     checkedAssets = {};
     assetsToAccept = [];

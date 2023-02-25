@@ -1,6 +1,5 @@
-import { Week, Day } from "./classes/calendarClass.js";
+import { Calendar, Day } from "./classes/calendarClass.js";
 import { users } from "./eventListener.js";
-
 const randomizeUsers = () => {
   let startUser = Math.floor(Math.random() * (users.length - 0) + 0);
   //move the selected user to the beginning as extracted prior
@@ -8,27 +7,41 @@ const randomizeUsers = () => {
   users.splice(startUser + 1, 1);
 };
 
-const days = [];
-let month = "March"; //userInput truncate to lenth 3
-let monthNumber =
-  "JanFebMarAprMayJunJulAugSepOctNovDec".indexOf(month.substring(0, 3)) / 3; //get month number 0-11
+export const days = [];
+export const getMonthDays = (month) => {
+  days.length = 0;
+  //userInput truncate to lenth 3
+  let monthNumber =
+    "GenFebMarAprMagGiuLugAgoSetOttNovDic".indexOf(month.substring(0, 3)) / 3 +
+    1; //get month number 0-11
+  let lastDayOfMonth = new Date(
+    new Date().getFullYear(),
+    monthNumber,
+    0
+  ).getDate();
+  const remainingDay = () => {
+    if (new Date().getMonth() === monthNumber - 1) {
+      return lastDayOfMonth - new Date().getDate();
+    } else {
+      return lastDayOfMonth;
+    }
+  };
+  let remainingDays = remainingDay();
+  for (let i = 1; i <= remainingDays; i++) {
+    days.push(
+      new Day(
+        `${new Date().getFullYear()}-${
+          monthNumber < 9 ? `0${monthNumber}` : monthNumber
+        }-${
+          new Date().getMonth() !== monthNumber - 1
+            ? i
+            : new Date().getDate() + i
+        }`
+      )
+    );
+  }
+};
 
-let lastDayOfMonth = new Date(
-  new Date().getFullYear(),
-  monthNumber,
-  0
-).getDate();
-let remainingDay = lastDayOfMonth - new Date().getDate();
-
-for (let i = 1; i <= remainingDay; i++) {
-  days.push(
-    new Day(
-      `${new Date().getFullYear()}-${
-        monthNumber < 9 ? `0${monthNumber}` : monthNumber
-      }-${new Date().getDate() + i}`
-    )
-  );
-}
 export const assignDays = () => {
   days.forEach((day) => {
     let currentDay = day.date;
@@ -45,5 +58,3 @@ export const assignDays = () => {
     randomizeUsers();
   });
 };
-
-//console.log(days);
