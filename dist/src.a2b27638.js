@@ -143,16 +143,15 @@ var Calendar = /*#__PURE__*/function () {
         if (day.occupiedBy.filter(function (e) {
           return e === user.name;
         }) > 0) {
-          return "<button class=\"btn btn-success calendarDayBtn px-2\" id=\"\">".concat(day.date, "</button>");
+          return "<button class=\"btn btn-success calendarDayBtn px-2\" id=\"\">".concat(day.printForCalendar(day.date), "</button>");
         } else if (day.isReserved()) {
-          return "<button class=\"btn btn-dark calendarDayBtn px-2\" id=\"\">".concat(day.date, "</button>");
+          return "<button class=\"btn btn-dark calendarDayBtn px-2\" id=\"\" disabled>".concat(day.printForCalendar(day.date), "</button>");
         } else {
-          return "<button class=\"btn btn-warning calendarDayBtn px-2\" id=\"\">".concat(day.date, "</button>");
+          return "<button class=\"btn btn-warning calendarDayBtn px-2\" id=\"\">".concat(day.printForCalendar(day.date), "</button>");
         }
       });
-      console.log(buttons);
-      this.rows.push("<div class=\"row mt-5 text-center\" id=".concat(user.name, ">\n        <div class=\"col-md-1\">\n          <b>").concat(user.name, "</b>\n        </div>\n        <div class=\"col-md-11\">\n        ").concat(btn.join(""), "\n        </div>\n    </div>"));
-      console.log(this.rows);
+      this.rows.push("<div class=\"row mt-5 text-center\" id=".concat(user.name, ">\n        <div class=\"col-md-1\">\n          <b>").concat(user.name, "</b>\n        </div>\n        <div class=\"col-md-11\">\n        ").concat(buttons.join(""), "\n        </div>\n    </div>"));
+      //console.log(this.rows);
     }
   }]);
   return Calendar;
@@ -165,6 +164,11 @@ var Day = /*#__PURE__*/function () {
     this.occupiedBy = []; // array with names
   }
   _createClass(Day, [{
+    key: "printForCalendar",
+    value: function printForCalendar(day) {
+      return "".concat(day[9] ? day[8] + "" + day[9] : "0" + day[8], "/").concat(day[5]).concat(day[6]);
+    }
+  }, {
     key: "isNextDayAvaiable",
     value: function isNextDayAvaiable() {
       //check if the next day is: weekend - holiday - free
@@ -282,35 +286,74 @@ var User = /*#__PURE__*/function () {
   return User;
 }();
 exports.User = User;
-},{}],"src/eventListener.js":[function(require,module,exports) {
+},{}],"src/populateHTML.js":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.users = void 0;
+exports.printCalendar = void 0;
+var _index = require("./index.js");
+//import { calendar } from "./eventListener.js";
+var monthNames = ["Gennaio", "Febbraio", "Marzo", "Aprile", "Maggio", "Giugno", "Luglio", "Agosto", "Settembre", "Ottobre", "Novembre", "Dicembre"];
+window.onload = function () {
+  //add the next 4 month to the month selector
+  var monthSelectorElement = document.querySelector("#monthSelector");
+  var currentMonth = new Date().getMonth();
+  for (var i = 0; i < 4; i++) {
+    if (i === 0) {
+      (0, _index.getMonthDays)(monthNames[i + currentMonth]);
+    }
+    var option = document.createElement("option");
+    option.text = "".concat(monthNames[i + currentMonth]);
+    monthSelectorElement.add(option);
+  }
+};
+
+//create Calendar GUI
+var printCalendar = function printCalendar(calendar) {
+  var calendarDiv = document.querySelector(".calendar");
+  calendarDiv.innerHTML = "";
+  calendar["rows"].forEach(function (row) {
+    calendarDiv.innerHTML += row;
+  });
+};
+exports.printCalendar = printCalendar;
+},{"./index.js":"src/index.js"}],"src/eventListener.js":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.users = exports.calendar = void 0;
 var _userClass = require("./classes/userClass.js");
 var _calendarClass = require("./classes/calendarClass.js");
 var _index = require("./index.js");
+var _populateHTML = require("./populateHTML.js");
 var users = [];
 exports.users = users;
+var calendar = new _calendarClass.Calendar();
+exports.calendar = calendar;
 document.querySelector("#getUserForm").addEventListener("submit", function (e) {
   e.preventDefault();
   var username = document.querySelector("#username").value.trim();
   if (username === "") {
     return;
   }
-  console.log("submitted");
   username = username[0].toUpperCase() + username.substring(1);
   users.push(new _userClass.User(username));
-  var calendar = new _calendarClass.Calendar();
   calendar.addUser(users[users.length - 1], _index.days);
+  document.querySelector("#createCalendarButton").removeAttribute("disabled");
 });
 document.querySelector("#monthSelector").addEventListener("change", function (e) {
   (0, _index.getMonthDays)(e.currentTarget.value);
-  //console.log(days);
+  calendar.rows = [];
 });
-},{"./classes/userClass.js":"src/classes/userClass.js","./classes/calendarClass.js":"src/classes/calendarClass.js","./index.js":"src/index.js"}],"src/index.js":[function(require,module,exports) {
+document.querySelector(".createCalendarDiv").addEventListener("click", function (e) {
+  //TODO elaborate calendar days
+  (0, _populateHTML.printCalendar)(calendar);
+});
+},{"./classes/userClass.js":"src/classes/userClass.js","./classes/calendarClass.js":"src/classes/calendarClass.js","./index.js":"src/index.js","./populateHTML.js":"src/populateHTML.js"}],"src/index.js":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {

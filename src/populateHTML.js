@@ -1,5 +1,5 @@
 import { days, getMonthDays } from "./index.js";
-
+//import { calendar } from "./eventListener.js";
 const monthNames = [
   `Gennaio`,
   `Febbraio`,
@@ -26,7 +26,13 @@ window.onload = () => {
     option.text = `${monthNames[i + currentMonth]}`;
     monthSelectorElement.add(option);
   }
-  console.log(days);
 };
 
 //create Calendar GUI
+export const printCalendar = (calendar) => {
+  const calendarDiv = document.querySelector(`.calendar`)
+  calendarDiv.innerHTML = ``
+  calendar[`rows`].forEach(row => {
+    calendarDiv.innerHTML += row
+  })
+}
