@@ -20,7 +20,7 @@ export class User {
     let weekNumber = this.getWeekNumber(day);
     this.assignedDays.push({
       weekNumber,
-      day
+      day,
     });
     //console.log(this.assignedDays)
   }
