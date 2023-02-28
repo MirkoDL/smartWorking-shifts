@@ -1,6 +1,9 @@
 #userList li {
   display: inline-block;
-  margin: 10px;
+}
+
+.existingUser{
+  color: red;
 }
 
 /*# sourceMappingURL=/styles.683c48de.css.map */

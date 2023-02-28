@@ -43,6 +43,9 @@ export const getMonthDays = (month) => {
 };
 
 export const assignDays = () => {
+  if(users.length < 1){
+    return
+  }
   days.forEach((day) => {
     let currentDay = day.date;
 

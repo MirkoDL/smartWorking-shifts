@@ -1,4 +1,7 @@
 #userList li {
   display: inline-block;
-  margin: 10px;
+}
+
+.existingUser{
+  color: red;
 }
