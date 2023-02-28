@@ -5,7 +5,7 @@ export class Calendar {
   }
   addUser(user, days) {
     let buttons = days.map((day) => {
-      if (day.occupiedBy.filter((e) => e === user.name) > 0) {
+      if (day.occupiedBy.filter((e) => e.name === user.name).length > 0) {
         return `<button class="btn btn-success calendarDayBtn p-0" value="${
           day.date
         }" id="">${day.printForCalendar(day.date)}</button>`;
@@ -27,7 +27,6 @@ export class Calendar {
         ${buttons.join(``)}
         </div>
     </div>`);
-    //console.log(this.rows);
   }
 }
 

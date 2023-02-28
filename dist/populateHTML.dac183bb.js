@@ -141,8 +141,8 @@ var Calendar = /*#__PURE__*/function () {
     value: function addUser(user, days) {
       var buttons = days.map(function (day) {
         if (day.occupiedBy.filter(function (e) {
-          return e === user.name;
-        }) > 0) {
+          return e.name === user.name;
+        }).length > 0) {
           return "<button class=\"btn btn-success calendarDayBtn p-0\" value=\"".concat(day.date, "\" id=\"\">").concat(day.printForCalendar(day.date), "</button>");
         } else if (day.isReserved()) {
           return "<button class=\"btn btn-dark calendarDayBtn p-0\" id=\"\" value=\"".concat(day.date, "\" disabled>").concat(day.printForCalendar(day.date), "</button>");
@@ -151,7 +151,6 @@ var Calendar = /*#__PURE__*/function () {
         }
       });
       this.rows.push("<div class=\"row mt-5 text-center\" id=".concat(user.name, ">\n        <div class=\"col-md-1\">\n          <b>").concat(user.name, "</b>\n        </div>\n        <div class=\"col-md-11\">\n        ").concat(buttons.join(""), "\n        </div>\n    </div>"));
-      //console.log(this.rows);
     }
   }]);
   return Calendar;
@@ -313,14 +312,18 @@ document.querySelector("#submitForm").addEventListener("click", function (e) {
   } else {
     username = username[0].toUpperCase() + username.substring(1);
     users.push(new _userClass.User(username));
+    (0, _index.assignDays)();
     calendar.addUser(users[users.length - 1], _index.days);
     document.querySelector("#createCalendarButton").removeAttribute("disabled");
     document.querySelector("#userList").appendChild(document.createElement("li").appendChild(document.createTextNode("".concat(username, " "))));
+    //document.querySelector(`#username`).value = ``
   }
 });
+
 document.querySelector("#monthSelector").addEventListener("change", function (e) {
   (0, _index.getMonthDays)(e.currentTarget.value);
   calendar.rows = [];
+  (0, _index.assignDays)();
   users.forEach(function (user) {
     calendar.addUser(user, _index.days);
   });
@@ -328,7 +331,20 @@ document.querySelector("#monthSelector").addEventListener("change", function (e)
 });
 document.querySelector("#createCalendarButton").addEventListener("click", function (e) {
   //TODO elaborate calendar days
+
   (0, _populateHTML.printCalendar)(calendar);
+});
+document.querySelector("#username").addEventListener("input", function (e) {
+  var element = e.currentTarget;
+  if (users.filter(function (user) {
+    return user.name.toLowerCase() === element.value;
+  }).length > 0) {
+    element.style.color = "red";
+    document.querySelector("#submitForm").disabled = true;
+  } else {
+    element.style.color = "black";
+    document.querySelector("#submitForm").disabled = false;
+  }
 });
 },{"./classes/userClass.js":"src/classes/userClass.js","./classes/calendarClass.js":"src/classes/calendarClass.js","./index.js":"src/index.js","./populateHTML.js":"src/populateHTML.js"}],"src/index.js":[function(require,module,exports) {
 "use strict";
@@ -366,6 +382,9 @@ var getMonthDays = function getMonthDays(month) {
 };
 exports.getMonthDays = getMonthDays;
 var assignDays = function assignDays() {
+  if (_eventListener.users.length < 1) {
+    return;
+  }
   days.forEach(function (day) {
     var currentDay = day.date;
     for (var i = 0; i < Math.round(_eventListener.users.length / 2); i++) {
