@@ -1,5 +1,5 @@
-import { days, getMonthDays } from "./index.js";
-//import { calendar } from "./eventListener.js";
+import { getMonthDays } from "./index.js";
+
 const monthNames = [
   `Gennaio`,
   `Febbraio`,

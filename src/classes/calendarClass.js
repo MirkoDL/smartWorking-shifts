@@ -6,11 +6,17 @@ export class Calendar {
   addUser(user, days) {
     let buttons = days.map((day) => {
       if (day.occupiedBy.filter((e) => e === user.name) > 0) {
-        return `<button class="btn btn-success calendarDayBtn px-2" id="">${day.printForCalendar(day.date)}</button>`;
+        return `<button class="btn btn-success calendarDayBtn p-0" value="${
+          day.date
+        }" id="">${day.printForCalendar(day.date)}</button>`;
       } else if (day.isReserved()) {
-        return `<button class="btn btn-dark calendarDayBtn px-2" id="" disabled>${day.printForCalendar(day.date)}</button>`;
+        return `<button class="btn btn-dark calendarDayBtn p-0" id="" value="${
+          day.date
+        }" disabled>${day.printForCalendar(day.date)}</button>`;
       } else {
-        return `<button class="btn btn-warning calendarDayBtn px-2" id="">${day.printForCalendar(day.date)}</button>`;
+        return `<button class="btn btn-warning calendarDayBtn p-0" id="" value="${
+          day.date
+        }">${day.printForCalendar(day.date)}</button>`;
       }
     });
     this.rows.push(`<div class="row mt-5 text-center" id=${user.name}>
@@ -30,8 +36,12 @@ export class Day {
     this.date = day; // aaaa-mm-dd
     this.occupiedBy = []; // array with names
   }
-  printForCalendar(day){
-    return (`${day[9] ? day[8] + `` + day[9] : `0` + day[8]}/${day[5]}${day[6]}`)
+  printForCalendar(day) {
+    return new Date(day).toLocaleString("it-IT", {
+      weekday: "short",
+      month: "2-digit",
+      day: "2-digit",
+    });
   }
   isNextDayAvaiable() {
     //check if the next day is: weekend - holiday - free

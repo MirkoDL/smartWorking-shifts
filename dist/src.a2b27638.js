@@ -294,7 +294,6 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.printCalendar = void 0;
 var _index = require("./index.js");
-//import { calendar } from "./eventListener.js";
 var monthNames = ["Gennaio", "Febbraio", "Marzo", "Aprile", "Maggio", "Giugno", "Luglio", "Agosto", "Settembre", "Ottobre", "Novembre", "Dicembre"];
 window.onload = function () {
   //add the next 4 month to the month selector
@@ -334,22 +333,29 @@ var users = [];
 exports.users = users;
 var calendar = new _calendarClass.Calendar();
 exports.calendar = calendar;
-document.querySelector("#getUserForm").addEventListener("submit", function (e) {
+document.querySelector("#submitForm").addEventListener("click", function (e) {
   e.preventDefault();
   var username = document.querySelector("#username").value.trim();
   if (username === "") {
     return;
+  } else {
+    username = username[0].toUpperCase() + username.substring(1);
+    users.push(new _userClass.User(username));
+    calendar.addUser(users[users.length - 1], _index.days);
+    document.querySelector("#createCalendarButton").removeAttribute("disabled");
+    document.querySelector("#userList").appendChild(document.createElement("li").appendChild(document.createTextNode(username)));
+    console.log(e.currentTarget);
   }
-  username = username[0].toUpperCase() + username.substring(1);
-  users.push(new _userClass.User(username));
-  calendar.addUser(users[users.length - 1], _index.days);
-  document.querySelector("#createCalendarButton").removeAttribute("disabled");
 });
 document.querySelector("#monthSelector").addEventListener("change", function (e) {
   (0, _index.getMonthDays)(e.currentTarget.value);
   calendar.rows = [];
+  users.forEach(function (user) {
+    calendar.addUser(user, _index.days);
+  });
+  (0, _populateHTML.printCalendar)(calendar);
 });
-document.querySelector(".createCalendarDiv").addEventListener("click", function (e) {
+document.querySelector("#createCalendarButton").addEventListener("click", function (e) {
   //TODO elaborate calendar days
   (0, _populateHTML.printCalendar)(calendar);
 });

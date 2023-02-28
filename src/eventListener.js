@@ -5,24 +5,36 @@ import { printCalendar } from "./populateHTML.js";
 
 export const users = [];
 export const calendar = new Calendar();
-document.querySelector(`#getUserForm`).addEventListener(`submit`, (e) => {
+document.querySelector(`#submitForm`).addEventListener(`click`, (e) => {
   e.preventDefault();
   let username = document.querySelector(`#username`).value.trim();
   if (username === ``) {
     return;
+  } else {
+    username = username[0].toUpperCase() + username.substring(1);
+    users.push(new User(username));
+    calendar.addUser(users[users.length - 1], days);
+    document.querySelector(`#createCalendarButton`).removeAttribute(`disabled`);
+    document
+      .querySelector(`#userList`)
+      .appendChild(
+        document
+          .createElement("li")
+          .appendChild(document.createTextNode(`${username} `))
+      );
   }
-  username = username[0].toUpperCase() + username.substring(1);
-  users.push(new User(username));
-  calendar.addUser(users[users.length - 1], days);
-  document.querySelector(`#createCalendarButton`).removeAttribute(`disabled`);
 });
 
 document.querySelector(`#monthSelector`).addEventListener(`change`, (e) => {
   getMonthDays(e.currentTarget.value);
-  calendar.rows = []
+  calendar.rows = [];
+  users.forEach((user) => {
+    calendar.addUser(user, days);
+  });
+  printCalendar(calendar);
 });
 
-document.querySelector(`.createCalendarDiv`).addEventListener(`click`, (e) => {
+document.querySelector(`#createCalendarButton`).addEventListener(`click`, (e) => {
   //TODO elaborate calendar days
-  printCalendar(calendar)
+  printCalendar(calendar);
 });

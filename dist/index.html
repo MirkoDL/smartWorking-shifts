@@ -26,17 +26,21 @@
       <!--month selector-->
       <div class="row mt-2" id="getUserDiv">
         <div class="col">
-          <form action="" id="getUserForm">
             <div class="input-group mb-3">
               <input id="username" type="text" class="form-control" placeholder="Utente">
-              <button class="btn btn-outline-primary" type="submit" id="submitForm">
+              <button class="btn btn-outline-primary" type="button" id="submitForm">
                 Aggiungi
               </button>
             </div>
-          </form>
         </div>
       </div>
       <!--input user-->
+      <div class="row userListDiv text-center">
+          <div class="col-md-12">
+            <ul id="userList">
+            </ul>
+          </div>
+      </div><!--user list-->
       <div class="row justify-content-center mt-4 createCalendarDiv">
         <div class="col-xs-12">
           <button type="button" class="btn btn-outline-primary" disabled="" id="createCalendarButton">Crea calendario</button>
@@ -53,7 +57,6 @@
       <!--calendar view-->
     </div>
     <!--container-->
-    <script src="/src.a2b27638.js"></script>
     <script src="/populateHTML.dac183bb.js"></script>
     <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.14.3/dist/umd/popper.min.js"></script>

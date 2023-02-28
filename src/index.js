@@ -1,4 +1,4 @@
-import { Calendar, Day } from "./classes/calendarClass.js";
+import { Day } from "./classes/calendarClass.js";
 import { users } from "./eventListener.js";
 const randomizeUsers = () => {
   let startUser = Math.floor(Math.random() * (users.length - 0) + 0);
